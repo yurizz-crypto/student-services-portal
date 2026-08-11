@@ -25,6 +25,31 @@ function isStudentValid(data: unknown): boolean {
   return true;
 }
 
+export function getStudentStatusLabel(
+  status: StudentStatus | null | undefined,
+): string {
+  // Handle invalid or unexpected values safely, as requested in Part 14
+  if (!status) {
+    return "Unknown Status";
+  }
+
+  switch (status) {
+    case "active":
+      return "Active Student";
+    case "inactive":
+      return "Inactive Student";
+    default:
+      // Fallback for runtime safety if invalid data bypasses TypeScript
+      return "Unrecognized Status";
+  }
+}
+
+export type StudentStatus = "active" | "inactive";
+
+// Test it for Part 19:
+console.log(getStudentStatusLabel("active")); // Should print: Active Student
+console.log(getStudentStatusLabel("inactive")); // Should print: Inactive Student
+
 const studentResponse: ApiResponse<Student> = {
   success: true,
   data: {
@@ -36,9 +61,11 @@ const studentResponse: ApiResponse<Student> = {
 };
 
 console.log(formatStudent(studentResponse.data)); // Format
+
 console.log(
   isStudentValid({ id: 1, name: "Alice", email: "a@a.com", status: "active" }),
 ); // Valid
+
 console.log(
   isStudentValid({
     id: "wrong-id",
@@ -47,4 +74,5 @@ console.log(
     status: "active",
   }),
 ); // Invalid ID
+
 console.log(isStudentValid({ id: 2, email: "c@c.com", status: "active" })); // Missing name
